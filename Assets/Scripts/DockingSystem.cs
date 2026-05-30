@@ -6,7 +6,7 @@ using UnityEngine.InputSystem;
 //[RequireComponent(typeof(MassSystem))]
 public class DockingSystem : MonoBehaviour
 {
-    [Header("DetecciÃ³n")]
+    [Header("Deteccion")]
     public float dockingRange = 4f;
     public LayerMask junkLayer;
 
