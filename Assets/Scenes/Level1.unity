@@ -133,6 +133,7 @@ GameObject:
   - component: {fileID: 197455123}
   - component: {fileID: 197455122}
   - component: {fileID: 197455121}
+  - component: {fileID: 197455127}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -281,6 +282,27 @@ Transform:
   - {fileID: 1910807367}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &197455127
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 197455120}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c065b7de831a42042a88cced0ee6571c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DockingSystem
+  dockingRange: 4
+  junkLayer:
+    serializedVersion: 2
+    m_Bits: 64
+  launchSpeed: 6
+  inputActions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  promptText: {fileID: 0}
+  DockSound: {fileID: 8300000, guid: d47fcc659b776394bb08b14761f975e2, type: 3}
+  ReleaseSound: {fileID: 8300000, guid: b3a524665dd9ae449b247cf35c58be98, type: 3}
 --- !u!1 &330585543
 GameObject:
   m_ObjectHideFlags: 0
