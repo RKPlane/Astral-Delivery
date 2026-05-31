@@ -20,6 +20,7 @@ Astral Delivery es un juego 3D en el que el jugador controla a un operario espac
 | Space | Impulso arriba |
 | L.Ctrl | Impulso abajo |
 | Shift | Impulso hacia delante |
+| Q | Frenado |
 | E | Acoplar chatarra cercana |
 | F | Soltar |
 ---
