@@ -39,8 +39,6 @@ Astral Delivery es un juego 3D en el que el jugador controla a un operario espac
 
 **Fuerzas.** Se usan ForceMode.Force para el thruster y el freno, y ForceMode.Impulse para la reacción newtoniana al lanzar objetos.
 
-**Resistencia viscosa.** ViscousDrag.cs implementa la fórmula cuadrática F = 1/2 · rho · Cd · A · v² en lugar del linearDamping de Unity, con parámetros configurables de densidad del fluido, coeficiente de arrastre y sección frontal.
-
 ---
 
 ## Decisiones y soluciones
@@ -57,4 +55,4 @@ Astral Delivery es un juego 3D en el que el jugador controla a un operario espac
 
 ## Vídeo de gameplay
 
-*Enlace al vídeo aquí*
+https://youtu.be/6OimYpYmNzk
