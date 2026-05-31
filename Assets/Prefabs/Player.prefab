@@ -143,7 +143,7 @@ Rigidbody:
   m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 1
-  m_Constraints: 0
+  m_Constraints: 112
   m_CollisionDetection: 0
 --- !u!114 &4106794445562259514
 MonoBehaviour:
@@ -157,17 +157,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea0a1b8133f85a548ad9a3a5b683bd2e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
-  thrustForce: 20
+  thrustForce: 60
   rotationSpeed: 90
-  maxSpeed: 6
-  brakeForce: 10
+  maxSpeed: 20
+  brakeForce: 100
   brakeDeadzone: 0.08
   brakeParticles: {fileID: 662413502150341824}
+  boostForce: 45
+  boostMaxSpeed: 20
   thrusterParticles: {fileID: 662413502150341824}
   cameraTarget: {fileID: 0}
   cameraSmoothing: 5
   cameraOffset: {x: 0, y: 4, z: -10}
   inputActions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  shipModel: {fileID: 9055540346030844226}
 --- !u!114 &7642653926827444558
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -187,8 +190,6 @@ MonoBehaviour:
   launchSpeed: 6
   inputActions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   promptText: {fileID: 0}
-  DockSound: {fileID: 8300000, guid: d47fcc659b776394bb08b14761f975e2, type: 3}
-  ReleaseSound: {fileID: 8300000, guid: b3a524665dd9ae449b247cf35c58be98, type: 3}
 --- !u!114 &5431827882596713216
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -201,7 +202,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a247a6d55d8ee0540b94527c6b960c49, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MassSystem
-  baseMass: 1
+  baseMass: 7
 --- !u!1 &8362124059929382257
 GameObject:
   m_ObjectHideFlags: 0
@@ -228,13 +229,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8362124059929382257}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: 1, y: 0, z: 0, w: 0}
+  m_LocalPosition: {x: 0, y: -0.751, z: -5.552}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 9055540346030844226}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 180, y: 0, z: 0}
 --- !u!198 &662413502150341824
 ParticleSystem:
   m_ObjectHideFlags: 0
@@ -867,7 +868,7 @@ ParticleSystem:
     serializedVersion: 6
     enabled: 1
     type: 4
-    angle: 15
+    angle: 5
     length: 5
     boxThickness: {x: 0, y: 0, z: 0}
     radiusThickness: 1
@@ -953,7 +954,7 @@ ParticleSystem:
     sphericalDirectionAmount: 0
     randomPositionAmount: 0
     radius:
-      value: 1
+      value: 0.5
       mode: 0
       spread: 0
       speed:

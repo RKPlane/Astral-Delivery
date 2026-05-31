@@ -70,7 +70,7 @@ public class ScoreSystem : MonoBehaviour
         if (finalScoreText != null) finalScoreText.text = $"PUNTOS: {Score}\n+{tBonus} bonus de tiempo";
         if (finalTimeText != null) finalTimeText.text = $"TIEMPO: {mins:00}:{secs:00}";
 
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(6f);
 
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }

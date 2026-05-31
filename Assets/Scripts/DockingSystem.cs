@@ -149,7 +149,7 @@ public class DockingSystem : MonoBehaviour
         else
         {
             rbJunk.linearVelocity = player.Velocity;
-            item.junk.SetCollected(true);
+            //item.junk.SetCollected(true);
         }
 
         massSystem.RemoveMass(item.junk.JunkData.mass);
@@ -182,5 +182,5 @@ public class DockingSystem : MonoBehaviour
             item.junk.SetCollected(true);
             massSystem.RemoveMass(item.junk.JunkData.mass);
         }
-    }
+    } 
 }

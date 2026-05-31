@@ -14,6 +14,10 @@ public class PlayerController : MonoBehaviour
     public float brakeDeadzone = 0.08f;
     public ParticleSystem brakeParticles;
 
+    [Header("Boost")]
+    public float boostForce = 20f;
+    public float boostMaxSpeed = 12f;
+
     [Header("Particulas")]
     public ParticleSystem thrusterParticles;
 
@@ -29,6 +33,7 @@ public class PlayerController : MonoBehaviour
     public Transform shipModel;
     private float visualYaw;
     private float visualPitch;
+
 
     private InputAction moveAction;
     private InputAction verticalMoveAction;
@@ -112,9 +117,13 @@ public class PlayerController : MonoBehaviour
     {
         if (!boostPressed) return;
 
+        //Validacion
+        if (rb.linearVelocity.magnitude >= boostMaxSpeed)
+            return;
+
         Vector3 forward = transform.forward;
 
-        rb.AddForce(forward * thrustForce, ForceMode.Impulse);
+        rb.AddForce(forward * boostForce, ForceMode.Force);
     }
 
     void ApplyBrake()
