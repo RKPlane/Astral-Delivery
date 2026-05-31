@@ -37,7 +37,7 @@
                     "name": "Attack",
                     "type": "Button",
                     "id": "6c2ab1b8-8984-453a-af3d-a3c78ae1679a",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -127,6 +127,15 @@
                     "name": "Brake",
                     "type": "Button",
                     "id": "131a6dfe-39dd-4994-a5ac-d079bd5d9020",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Thrusters",
+                    "type": "Button",
+                    "id": "e0b1dac5-f4cf-4d24-9c40-3edbb4c93fb3",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -520,26 +529,37 @@
                     "isPartOfComposite": false
                 },
                 {
-                    "name": "",
-                    "id": "569eb1c7-4152-4528-b369-3b967b6de588",
+                    "name": "1D Axis",
+                    "id": "969a4200-a5f2-49e1-90f9-14af7781b334",
+                    "path": "1DAxis",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "VerticalMove",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "negative",
+                    "id": "4d708bc5-abfa-4561-9286-52ab390f8e20",
+                    "path": "<Keyboard>/leftCtrl",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "VerticalMove",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "positive",
+                    "id": "2a6cf727-5e3f-45a9-8c34-9ad092f8d290",
                     "path": "<Keyboard>/space",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
                     "action": "VerticalMove",
                     "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "d1af1207-f440-409e-a0c3-433ee58d62c8",
-                    "path": "<Keyboard>/leftShift",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "VerticalMove",
-                    "isComposite": false,
-                    "isPartOfComposite": false
+                    "isPartOfComposite": true
                 },
                 {
                     "name": "",
@@ -582,6 +602,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "Brake",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "fd953854-232c-4a2e-a218-350932d0d099",
+                    "path": "<Keyboard>/leftShift",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Thrusters",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

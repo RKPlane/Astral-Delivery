@@ -1,10 +1,8 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Audio;
 using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(PlayerController))]
-//[RequireComponent(typeof(MassSystem))]
 public class DockingSystem : MonoBehaviour
 {
     [Header("Deteccion")]
@@ -14,17 +12,14 @@ public class DockingSystem : MonoBehaviour
     [Header("Lanzamiento")]
     public float launchSpeed = 6f;
 
-    public InputActionAsset inputActions; // Da acceso a todas las acciones de input definidas en el Input Action Asset
+    [Header("Input")]
+    public InputActionAsset inputActions;
     private InputAction dockAction;
     private InputAction releaseAction;
     private InputAction launchAction;
 
     [Header("Feedback")]
     public TMPro.TextMeshProUGUI promptText;
-
-    [Header("Efectos de Sonido")]
-    public AudioClip DockSound;
-    public AudioClip ReleaseSound;
 
     private PlayerController player;
     private MassSystem massSystem;
@@ -36,6 +31,17 @@ public class DockingSystem : MonoBehaviour
     {
         public JunkObject junk;
         public FixedJoint joint;
+    }
+
+    void Awake()
+    {
+        player = GetComponent<PlayerController>();
+        massSystem = GetComponent<MassSystem>();
+
+        var playerMap = inputActions.FindActionMap("Player");
+        dockAction = playerMap.FindAction("Dock");
+        releaseAction = playerMap.FindAction("Release");
+        launchAction = playerMap.FindAction("Launch");
     }
 
     void OnEnable()
@@ -50,17 +56,6 @@ public class DockingSystem : MonoBehaviour
         dockAction.Disable();
         releaseAction.Disable();
         launchAction.Disable();
-    }
-    void Awake()
-    {
-        player = GetComponent<PlayerController>();
-        massSystem = GetComponent<MassSystem>();
-
-        var playerMap = inputActions.FindActionMap("Player");
-
-        dockAction = playerMap.FindAction("Dock");
-        releaseAction = playerMap.FindAction("Release");
-        launchAction = playerMap.FindAction("Launch");
     }
 
     void Update()
@@ -87,7 +82,7 @@ public class DockingSystem : MonoBehaviour
 
         if (promptText != null)
             promptText.text = nearestJunk != null
-                ? $"[ E ]  ACOPLAR  –  {nearestJunk.JunkData.label}  ({nearestJunk.JunkData.mass} kg)"
+                ? $"[ E ]  ACOPLAR  -  {nearestJunk.JunkData.label}  ({nearestJunk.JunkData.mass} kg)"
                 : string.Empty;
     }
 
@@ -105,6 +100,7 @@ public class DockingSystem : MonoBehaviour
         Rigidbody rbPlayer = player.GetComponent<Rigidbody>();
         Rigidbody rbJunk = nearestJunk.GetComponent<Rigidbody>();
 
+        //FIX
         float m1 = rbPlayer.mass;
         float m2 = rbJunk.mass;
         Vector3 vFinal = (m1 * rbPlayer.linearVelocity + m2 * rbJunk.linearVelocity) / (m1 + m2);
@@ -112,6 +108,9 @@ public class DockingSystem : MonoBehaviour
         rbPlayer.linearVelocity = vFinal;
         rbJunk.linearVelocity = vFinal;
         rbJunk.angularVelocity = Vector3.zero;
+
+        //FIX
+        //rbJunk.constraints = RigidbodyConstraints.FreezeRotation;
 
         FixedJoint joint = gameObject.AddComponent<FixedJoint>();
         joint.connectedBody = rbJunk;
@@ -124,7 +123,6 @@ public class DockingSystem : MonoBehaviour
 
         nearestJunk = null;
         if (promptText != null) promptText.text = string.Empty;
-
     }
 
     void TryRelease(bool launch)
@@ -135,9 +133,12 @@ public class DockingSystem : MonoBehaviour
         dockedItems.RemoveAt(dockedItems.Count - 1);
         Destroy(item.joint);
 
-        item.junk.SetDocked(false);
-
         Rigidbody rbJunk = item.junk.GetComponent<Rigidbody>();
+
+        //fix
+        rbJunk.constraints = RigidbodyConstraints.None;
+
+        item.junk.SetDocked(false);
 
         if (launch)
         {
@@ -150,6 +151,7 @@ public class DockingSystem : MonoBehaviour
             rbJunk.linearVelocity = player.Velocity;
             item.junk.SetCollected(true);
         }
+
         massSystem.RemoveMass(item.junk.JunkData.mass);
     }
 
@@ -163,5 +165,22 @@ public class DockingSystem : MonoBehaviour
     public float TotalDockedMass
     {
         get { float t = 0f; foreach (var d in dockedItems) t += d.junk.JunkData.mass; return t; }
+    }
+
+    public void DeliverAll()
+    {
+        while (dockedItems.Count > 0)
+        {
+            DockedItem item = dockedItems[^1];
+            dockedItems.RemoveAt(dockedItems.Count - 1);
+            Destroy(item.joint);
+
+            Rigidbody rbJunk = item.junk.GetComponent<Rigidbody>();
+            rbJunk.constraints = RigidbodyConstraints.None;
+
+            item.junk.SetDocked(false);
+            item.junk.SetCollected(true);
+            massSystem.RemoveMass(item.junk.JunkData.mass);
+        }
     }
 }

@@ -1,6 +1,7 @@
 using System.Collections;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class ScoreSystem : MonoBehaviour
 {
@@ -68,6 +69,10 @@ public class ScoreSystem : MonoBehaviour
         int secs = Mathf.FloorToInt(ElapsedTime % 60f);
         if (finalScoreText != null) finalScoreText.text = $"PUNTOS: {Score}\n+{tBonus} bonus de tiempo";
         if (finalTimeText != null) finalTimeText.text = $"TIEMPO: {mins:00}:{secs:00}";
+
+        yield return new WaitForSeconds(3f);
+
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
     void UpdateUI()

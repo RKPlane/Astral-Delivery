@@ -6,16 +6,13 @@ public class SpawnManager : MonoBehaviour
     public GameObject[] junkPrefabs;
 
     [Header("SPAWN")]
-    public int totalJunk = 12;
+    public int totalJunk = 35;
     public float minRadius = 10f;
-    public float maxRadius = 30f;
+    public float maxRadius = 45f;
     public Vector3 stationCenter = Vector3.zero;
-
-    public int randomSeed = 0;
 
     void Start()
     {
-        if (randomSeed != 0) UnityEngine.Random.InitState(randomSeed);
         SpawnAll();
     }
 
