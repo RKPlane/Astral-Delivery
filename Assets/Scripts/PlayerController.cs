@@ -7,6 +7,12 @@ public class PlayerController : MonoBehaviour
     [Header("Thruster")]
     public float thrustForce = 6f;
     public float rotationSpeed = 90f;
+    public float maxSpeed = 6f;
+
+    [Header("Freno (retro-thruster)")]
+    public float brakeForce = 10f;
+    public float brakeDeadzone = 0.08f;
+    public ParticleSystem brakeParticles;
 
     [Header("Particulas")]
     public ParticleSystem thrusterParticles;
@@ -21,9 +27,12 @@ public class PlayerController : MonoBehaviour
 
     private InputAction moveAction;
     private InputAction verticalMoveAction;
+    private InputAction brakeAction;
 
     private Vector2 moveInput;
     private float verticalInput;
+    private bool thrusting;
+    private bool braking;
 
     private Rigidbody rb;
 
@@ -44,92 +53,87 @@ public class PlayerController : MonoBehaviour
 
         moveAction = playerMap.FindAction("Move");
         verticalMoveAction = playerMap.FindAction("VerticalMove");
+        brakeAction = playerMap.FindAction("Brake");
     }
 
     void OnEnable()
     {
         moveAction.Enable();
         verticalMoveAction.Enable();
+        brakeAction.Enable();
     }
 
     void OnDisable()
     {
         moveAction.Disable();
         verticalMoveAction.Disable();
+        brakeAction.Disable();
     }
+
 
     void Update()
     {
         moveInput = moveAction.ReadValue<Vector2>();
         verticalInput = verticalMoveAction.ReadValue<float>();
+        braking = brakeAction.IsPressed();
     }
 
     void FixedUpdate()
     {
-        HandleThrust();
-        HandleRotation();
-        ClampMaxSpeed();
+        ApplyThrust();
+        ApplyBrake();
+        ApplyRotation();
+        ClampSpeed();
     }
 
-    void LateUpdate()
+    void ApplyThrust()
     {
-        FollowCamera();
-    }
-
-    void HandleThrust()
-    {
-        Vector3 inputDir = new Vector3(
-            moveInput.x,
-            verticalInput,
-            moveInput.y
-        ).normalized;
-
-        bool thrusting = inputDir.sqrMagnitude > 0.01f;
+        Vector3 dir = new Vector3(moveInput.x, verticalInput, moveInput.y).normalized;
+        thrusting = dir.sqrMagnitude > 0.01f;
 
         if (thrusting)
-        {
-            rb.AddForce(
-                transform.TransformDirection(inputDir) * thrustForce,
-                ForceMode.Force
-            );
-        }
+            rb.AddForce(transform.TransformDirection(dir) * thrustForce, ForceMode.Force);
 
-        if (thrusterParticles != null)
-        {
-            if (thrusting && !thrusterParticles.isEmitting)
-                thrusterParticles.Play();
-
-            if (!thrusting && thrusterParticles.isEmitting)
-                thrusterParticles.Stop();
-        }
+        if (thrusterParticles == null) return;
+        if (thrusting && !thrusterParticles.isEmitting) thrusterParticles.Play();
+        if (!thrusting && thrusterParticles.isEmitting) thrusterParticles.Stop();
     }
 
-    void HandleRotation()
+    void ApplyBrake()
     {
-        float yaw =
-            moveInput.x *
-            rotationSpeed *
-            Time.fixedDeltaTime;
+        float speed = rb.linearVelocity.magnitude;
 
-        float pitch =
-            moveInput.y *
-            rotationSpeed *
-            Time.fixedDeltaTime *
-            0.5f;
+        if (braking && speed > brakeDeadzone)
+        {
+            Vector3 brakeDir = -rb.linearVelocity.normalized;
+            float force = Mathf.Min(brakeForce, speed * rb.mass / Time.fixedDeltaTime);
+            rb.AddForce(brakeDir * force, ForceMode.Force);
+        }
 
+        if (brakeParticles == null) return;
+        bool shouldBrake = braking && speed > brakeDeadzone;
+        if (shouldBrake && !brakeParticles.isEmitting) brakeParticles.Play();
+        if (!shouldBrake && brakeParticles.isEmitting) brakeParticles.Stop();
+    }
+
+    void ApplyRotation()
+    {
+        if (!thrusting) return;
+        float yaw = moveInput.x * rotationSpeed * Time.fixedDeltaTime;
+        float pitch = moveInput.y * rotationSpeed * Time.fixedDeltaTime * 0.5f;
         transform.Rotate(Vector3.up, yaw, Space.World);
         transform.Rotate(Vector3.right, -pitch, Space.Self);
     }
 
-    void ClampMaxSpeed()
+    void ClampSpeed()
     {
-        float maxSpeed = 10f;
-
         if (rb.linearVelocity.magnitude > maxSpeed)
-        {
-            rb.linearVelocity =
-                rb.linearVelocity.normalized * maxSpeed;
-        }
+            rb.linearVelocity = rb.linearVelocity.normalized * maxSpeed;
+    }
+
+    private void LateUpdate()
+    {
+        FollowCamera();
     }
 
     void FollowCamera()
@@ -152,15 +156,9 @@ public class PlayerController : MonoBehaviour
         );
     }
 
-    public void ApplyReactionImpulse(
-        float junkMass,
-        Vector3 launchDirection,
-        float launchSpeed)
+    public void ApplyReactionImpulse(float junkMass, Vector3 dir, float speed)
     {
-        Vector3 reaction =
-            -launchDirection * (junkMass * launchSpeed);
-
-        rb.AddForce(reaction, ForceMode.Impulse);
+        rb.AddForce(-dir * (junkMass * speed), ForceMode.Impulse);
     }
 
     public void SetMass(float newMass)

@@ -95,6 +95,42 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Dock",
+                    "type": "Button",
+                    "id": "111ef9eb-808d-448c-848b-f88ed557cd1e",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Release",
+                    "type": "Button",
+                    "id": "7291435f-19d9-450d-943a-7ebaf3cf79c3",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Launch",
+                    "type": "Button",
+                    "id": "b4a7e68b-4c5b-44d5-9f54-12c32ad1c6a3",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Brake",
+                    "type": "Button",
+                    "id": "131a6dfe-39dd-4994-a5ac-d079bd5d9020",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -497,11 +533,55 @@
                 {
                     "name": "",
                     "id": "d1af1207-f440-409e-a0c3-433ee58d62c8",
-                    "path": "<Keyboard>/leftCtrl",
+                    "path": "<Keyboard>/leftShift",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
                     "action": "VerticalMove",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "7c9a445c-97d4-499a-ad82-d821f6c6b605",
+                    "path": "<Keyboard>/e",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Dock",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "60e88328-e705-43fd-ad84-33910c4db14b",
+                    "path": "<Keyboard>/f",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Release",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "e6685d9d-2d74-41d0-8ad7-c7ed9e16a694",
+                    "path": "<Keyboard>/r",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Launch",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "0452c426-fc60-48b5-b6d3-c80b1172f974",
+                    "path": "<Keyboard>/q",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Brake",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

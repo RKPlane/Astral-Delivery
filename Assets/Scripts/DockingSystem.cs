@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Audio;
 using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(PlayerController))]
@@ -26,7 +27,7 @@ public class DockingSystem : MonoBehaviour
     public AudioClip ReleaseSound;
 
     private PlayerController player;
-    //private MassSystem massSystem;
+    private MassSystem massSystem;
 
     private List<DockedItem> dockedItems = new List<DockedItem>();
     private JunkObject nearestJunk;
@@ -53,7 +54,7 @@ public class DockingSystem : MonoBehaviour
     void Awake()
     {
         player = GetComponent<PlayerController>();
-        //massSystem = GetComponent<MassSystem>();
+        massSystem = GetComponent<MassSystem>();
 
         var playerMap = inputActions.FindActionMap("Player");
 
@@ -71,7 +72,6 @@ public class DockingSystem : MonoBehaviour
     void ScanForNearbyJunk()
     {
         Collider[] hits = Physics.OverlapSphere(transform.position, dockingRange, junkLayer);
-
         float best = Mathf.Infinity;
         JunkObject found = null;
 
@@ -87,7 +87,7 @@ public class DockingSystem : MonoBehaviour
 
         if (promptText != null)
             promptText.text = nearestJunk != null
-                ? $"[ E ]  ACOPLAR  {nearestJunk.JunkData.label}"
+                ? $"[ E ]  ACOPLAR  –  {nearestJunk.JunkData.label}  ({nearestJunk.JunkData.mass} kg)"
                 : string.Empty;
     }
 
@@ -107,9 +107,7 @@ public class DockingSystem : MonoBehaviour
 
         float m1 = rbPlayer.mass;
         float m2 = rbJunk.mass;
-        Vector3 v1 = rbPlayer.linearVelocity;
-        Vector3 v2 = rbJunk.linearVelocity;
-        Vector3 vFinal = (m1 * v1 + m2 * v2) / (m1 + m2);
+        Vector3 vFinal = (m1 * rbPlayer.linearVelocity + m2 * rbJunk.linearVelocity) / (m1 + m2);
 
         rbPlayer.linearVelocity = vFinal;
         rbJunk.linearVelocity = vFinal;
@@ -122,7 +120,11 @@ public class DockingSystem : MonoBehaviour
 
         dockedItems.Add(new DockedItem { junk = nearestJunk, joint = joint });
         nearestJunk.SetDocked(true);
-        //massSystem.AddMass(nearestJunk.JunkData.mass);
+        massSystem.AddMass(nearestJunk.JunkData.mass);
+
+        nearestJunk = null;
+        if (promptText != null) promptText.text = string.Empty;
+
     }
 
     void TryRelease(bool launch)
@@ -131,27 +133,24 @@ public class DockingSystem : MonoBehaviour
 
         DockedItem item = dockedItems[^1];
         dockedItems.RemoveAt(dockedItems.Count - 1);
-
         Destroy(item.joint);
+
+        item.junk.SetDocked(false);
 
         Rigidbody rbJunk = item.junk.GetComponent<Rigidbody>();
 
         if (launch)
         {
-            Vector3 forward = transform.forward;
             float actualSpeed = launchSpeed * (player.Mass / (player.Mass + item.junk.JunkData.mass));
-            rbJunk.linearVelocity = forward * actualSpeed;
-            player.ApplyReactionImpulse(item.junk.JunkData.mass, forward, actualSpeed);
+            rbJunk.linearVelocity = transform.forward * actualSpeed;
+            player.ApplyReactionImpulse(item.junk.JunkData.mass, transform.forward, actualSpeed);
         }
         else
         {
             rbJunk.linearVelocity = player.Velocity;
             item.junk.SetCollected(true);
         }
-
-        item.junk.SetDocked(false);
-        //massSystem.RemoveMass(item.junk.JunkData.mass);
-
+        massSystem.RemoveMass(item.junk.JunkData.mass);
     }
 
     void OnDrawGizmosSelected()

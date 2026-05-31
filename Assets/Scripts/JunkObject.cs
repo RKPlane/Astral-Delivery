@@ -1,29 +1,6 @@
 using System;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "NewJunk", menuName = "SpaceJunk/JunkData")]
-public class JunkData : ScriptableObject
-{
-    [Header("Identidad")]
-    public string label = "PANEL SOLAR";
-    public GameObject prefab;
-    public Color glowColor = Color.cyan;
-
-    [Header("Física")]
-    public float mass = 2f;
-    public float driftSpeed = 0.15f;
-    public float spinSpeed = 8f;
-
-    [Header("Gameplay")]
-    public int points = 5;
-    public JunkRarity rarity = JunkRarity.Common;
-
-    [TextArea(2, 4)]
-    public string flavourText = "Módulo flotante de la estación destruida.";
-}
-
-public enum JunkRarity { Common, Rare, Critical }
-
 [RequireComponent(typeof(Rigidbody))]
 public class JunkObject : MonoBehaviour
 {
@@ -71,7 +48,6 @@ public class JunkObject : MonoBehaviour
     public void SetDocked(bool docked)
     {
         IsDocked = docked;
-        rb.isKinematic = docked;
         if (docked) OnDocked?.Invoke(this);
         else OnUndocked?.Invoke(this);
     }
@@ -90,9 +66,9 @@ public class JunkObject : MonoBehaviour
     void PlayCollectEffect()
     {
         if (collectEffect == null) return;
-        collectEffect.transform.SetParent(null);
-        collectEffect.Play();
-        Destroy(collectEffect.gameObject, collectEffect.main.duration + 0.5f);
+        ParticleSystem fx = Instantiate(collectEffect, transform.position, Quaternion.identity);
+        fx.Play();
+        Destroy(fx.gameObject, fx.main.duration + 0.5f);
     }
 
     void OnDrawGizmos()
@@ -100,40 +76,5 @@ public class JunkObject : MonoBehaviour
         if (IsDocked || IsCollected || junkData == null) return;
         Gizmos.color = junkData.glowColor * 0.4f;
         Gizmos.DrawWireSphere(transform.position, junkData.mass * 0.3f);
-    }
-}
-
-public class SpawnManager : MonoBehaviour
-{
-    [Header("Prefabs de chatarra")]
-    public GameObject[] junkPrefabs;
-
-    [Header("Distribución")]
-    public int totalJunk = 12;
-    public float minRadius = 10f;
-    public float maxRadius = 30f;
-    public Vector3 stationCenter = Vector3.zero;
-
-    public int randomSeed = 0;
-
-    void Start()
-    {
-        if (randomSeed != 0) UnityEngine.Random.InitState(randomSeed);
-        SpawnAll();
-    }
-
-    void SpawnAll()
-    {
-        if (junkPrefabs == null || junkPrefabs.Length == 0) return;
-
-        for (int i = 0; i < totalJunk; i++)
-        {
-            Vector3 dir = UnityEngine.Random.onUnitSphere;
-            float radius = UnityEngine.Random.Range(minRadius, maxRadius);
-            Vector3 pos = stationCenter + dir * radius;
-
-            GameObject prefab = junkPrefabs[UnityEngine.Random.Range(0, junkPrefabs.Length)];
-            Instantiate(prefab, pos, UnityEngine.Random.rotation);
-        }
     }
 }
